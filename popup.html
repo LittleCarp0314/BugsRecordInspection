@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>缺陷记录规范检测</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>缺陷记录规范检测</h1>
+
+        <div class="section">
+            <h2>规范来源</h2>
+            <div class="input-group">
+                <label for="excelFileUpload">上传Excel文件:</label>
+                <input type="file" id="excelFileUpload" accept=".xlsx, .xls">
+            </div>
+            <div class="input-group">
+                <label for="ragflowUrl">RAGflow知识库链接:</label>
+                <input type="text" id="ragflowUrl" placeholder="输入RAGflow知识库链接">
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>缺陷描述输入</h2>
+            <div class="input-group">
+                <button id="scanJiraButton">扫描当前Jira页面</button>
+            </div>
+            <div class="input-group">
+                <textarea id="manualDefectInput" placeholder="在此处粘贴缺陷描述..." rows="4"></textarea>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>大模型配置</h2>
+            <div class="input-group">
+                <label for="llmType">选择模型类型:</label>
+                <select id="llmType">
+                    <option value="custom" selected>自定义</option>
+                    <!-- Future options can be added here -->
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="modelUrl">模型URL:</label>
+                <input type="text" id="modelUrl" placeholder="模型URL">
+            </div>
+            <div class="input-group">
+                <label for="apiKey">API Key:</label>
+                <input type="password" id="apiKey" placeholder="API Key">
+            </div>
+            <div class="input-group">
+                <button id="testConnectionButton">测试连接</button>
+            </div>
+        </div>
+
+        <button id="startDetectionButton" class="primary-button">开始检测</button>
+
+        <div class="section">
+            <h2>检测结果</h2>
+            <div id="resultArea">
+                <!-- Results will be displayed here -->
+            </div>
+        </div>
+    </div>
+    <script src="popup.js"></script>
+</body>
+</html>
