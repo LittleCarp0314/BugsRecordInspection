@@ -10,15 +10,14 @@
         <h1>缺陷记录规范检测</h1>
 
         <div class="section">
-            <h2>规范来源</h2>
+            <h2>规范来源
+                <span id="ragflowSettingsButton" class="settings-icon" title="RAGflow配置">⚙️</span>
+            </h2>
             <div class="input-group">
                 <label for="excelFileUpload">上传Excel文件:</label>
                 <input type="file" id="excelFileUpload" accept=".xlsx, .xls">
             </div>
-            <div class="input-group">
-                <label for="ragflowUrl">RAGflow知识库链接:</label>
-                <input type="text" id="ragflowUrl" placeholder="输入RAGflow知识库链接">
-            </div>
+            <!-- RAGflow URL input removed from here -->
         </div>
 
         <div class="section">
@@ -31,8 +30,48 @@
             </div>
         </div>
 
+        <!-- LLM Config section header, actual inputs moved to modal -->
+        <div class="section-header-bar">
+             <h2>大模型 <span id="llmSettingsButton" class="settings-icon" title="大模型配置">⚙️</span></h2>
+        </div>
+
+
+        <button id="startDetectionButton" class="primary-button">开始检测</button>
+
         <div class="section">
-            <h2>大模型配置</h2>
+            <h2>检测结果</h2>
+            <div id="resultArea">
+                <!-- Results will be displayed here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- RAGflow Settings Modal -->
+    <div id="ragflowSettingsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="closeRagflowSettings">&times;</span>
+            <h3>RAGflow 配置</h3>
+            <div class="input-group">
+                <label for="ragflowUrl">RAGflow知识库链接:</label>
+                <input type="text" id="ragflowUrl" placeholder="输入RAGflow知识库链接">
+            </div>
+            <div class="input-group">
+                <label for="ragflowApiKey">RAGflow API Key:</label>
+                <input type="password" id="ragflowApiKey" placeholder="输入API Key">
+            </div>
+            <div class="input-group">
+                <label for="ragflowKbId">RAGflow 知识库ID:</label>
+                <input type="text" id="ragflowKbId" placeholder="输入知识库ID">
+            </div>
+            <button id="saveRagflowSettingsButton">保存RAGflow配置</button>
+        </div>
+    </div>
+
+    <!-- LLM Settings Modal -->
+    <div id="llmSettingsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="closeLlmSettings">&times;</span>
+            <h3>大模型配置</h3>
             <div class="input-group">
                 <label for="llmType">选择模型类型:</label>
                 <select id="llmType">
@@ -48,20 +87,12 @@
                 <label for="apiKey">API Key:</label>
                 <input type="password" id="apiKey" placeholder="API Key">
             </div>
-            <div class="input-group">
-                <button id="testConnectionButton">测试连接</button>
-            </div>
-        </div>
-
-        <button id="startDetectionButton" class="primary-button">开始检测</button>
-
-        <div class="section">
-            <h2>检测结果</h2>
-            <div id="resultArea">
-                <!-- Results will be displayed here -->
-            </div>
+            <button id="testConnectionButton">测试连接</button>
+            <button id="saveLlmSettingsButton">保存大模型配置</button>
         </div>
     </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="popup.js"></script>
 </body>
 </html>
