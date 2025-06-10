@@ -14,12 +14,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const ragflowSettingsButton = document.getElementById('ragflowSettingsButton');
     const llmSettingsButton = document.getElementById('llmSettingsButton');
 
-    // RAGflow Modal Elements
+    // RAGflow Modal Elements - Updated
     const ragflowSettingsModal = document.getElementById('ragflowSettingsModal');
     const closeRagflowSettings = document.getElementById('closeRagflowSettings');
-    const ragflowUrlInput = document.getElementById('ragflowUrl');
-    const ragflowApiKeyInput = document.getElementById('ragflowApiKey');
-    const ragflowKbIdInput = document.getElementById('ragflowKbId');
+    const ragflowApiUrlInput = document.getElementById('ragflowApiUrlInput'); // Renamed from ragflowUrlInput
+    // const ragflowApiKeyInput = document.getElementById('ragflowApiKey'); // REMOVED
+    const ragflowKbIdInput = document.getElementById('ragflowKbIdInput'); // Ensure ID matches HTML
     const saveRagflowSettingsButton = document.getElementById('saveRagflowSettingsButton');
 
     // LLM Modal Elements
@@ -34,20 +34,25 @@ document.addEventListener('DOMContentLoaded', function () {
     // --- Configuration Storage ---
     let defectStandards = null;
     let currentDefectData = null;
-    let ragflowConfig = { url: "", apiKey: "", kbId: "" };
-    let llmConfig = { type: "custom", url: "", apiKey: "" };
+
+    let ragflowConfig = {
+        apiUrl: "", // Renamed from url
+        // apiKey: "", // REMOVED
+        kbId: ""
+    };
+
+    let llmConfig = { type: "custom", url: "", apiKey: "" }; // Stays the same
 
     function loadSettings() {
         chrome.storage.local.get(['ragflowConfig', 'llmConfig'], function(items) {
             if (items.ragflowConfig) {
                 ragflowConfig = items.ragflowConfig;
-                ragflowUrlInput.value = ragflowConfig.url || "";
-                ragflowApiKeyInput.value = ragflowConfig.apiKey || "";
+                ragflowApiUrlInput.value = ragflowConfig.apiUrl || ""; // Updated field name
+                // ragflowApiKeyInput.value = ragflowConfig.apiKey || ""; // REMOVED
                 ragflowKbIdInput.value = ragflowConfig.kbId || "";
                 console.log("Loaded RAGflow config from storage:", ragflowConfig);
-                 // If a RAGflow URL is loaded, set it as the current standard source
-                if (ragflowConfig.url) {
-                    defectStandards = { source: 'ragflow', ...ragflowConfig, rules: [] }; // rules to be fetched later
+                if (ragflowConfig.apiUrl) { // Check apiUrl now
+                    defectStandards = { source: 'ragflow', apiUrl: ragflowConfig.apiUrl, kbId: ragflowConfig.kbId, rules: [] };
                 }
             }
             if (items.llmConfig) {
@@ -61,11 +66,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function saveRagflowConfigToStorage() {
+        // Ensure ragflowConfig object is updated before calling this
         chrome.storage.local.set({ ragflowConfig: ragflowConfig }, function() {
-            console.log('RAGflow configuration saved.');
+            console.log('RAGflow configuration saved (apiUrl, kbId).');
             showStatus("RAGflow配置已保存。", false, ragflowSettingsModal.querySelector('.modal-content'));
         });
     }
+    // saveLlmConfigToStorage remains the same
     function saveLlmConfigToStorage() {
         chrome.storage.local.set({ llmConfig: llmConfig }, function() {
             console.log('LLM configuration saved.');
@@ -95,15 +102,19 @@ document.addEventListener('DOMContentLoaded', function () {
     ragflowSettingsButton.addEventListener('click', () => ragflowSettingsModal.style.display = 'block');
     closeRagflowSettings.addEventListener('click', () => ragflowSettingsModal.style.display = 'none');
     saveRagflowSettingsButton.addEventListener('click', () => {
-        ragflowConfig.url = ragflowUrlInput.value.trim();
-        ragflowConfig.apiKey = ragflowApiKeyInput.value; // Keep potential spaces for API keys
+        ragflowConfig.apiUrl = ragflowApiUrlInput.value.trim(); // Updated field
+        // ragflowConfig.apiKey = ragflowApiKeyInput.value; // REMOVED
         ragflowConfig.kbId = ragflowKbIdInput.value.trim();
-        saveRagflowConfigToStorage();
-        if (ragflowConfig.url) {
-            defectStandards = { source: 'ragflow', ...ragflowConfig, rules: [] };
+
+        console.log("RAGflow settings updated in variable:", ragflowConfig);
+        saveRagflowConfigToStorage(); // Persist the changes
+
+        if (ragflowConfig.apiUrl) { // Check apiUrl
+            defectStandards = { source: 'ragflow', apiUrl: ragflowConfig.apiUrl, kbId: ragflowConfig.kbId, rules: [] };
             showStatus("RAGflow配置已更新。将使用此配置获取规范。", false, resultArea);
         } else if (defectStandards && defectStandards.source === 'ragflow') {
-            defectStandards = null; // Clear if URL was removed
+            defectStandards = null; // Clear if API URL was removed
+            showStatus("RAGflow API URL 已清除。规范来源已重置。", false, resultArea);
         }
         ragflowSettingsModal.style.display = 'none';
     });
@@ -128,37 +139,71 @@ document.addEventListener('DOMContentLoaded', function () {
         const file = event.target.files[0];
         if (file) {
             showStatus(`正在处理Excel文件 "${file.name}"...`);
-            setButtonsDisabled(true);
+            setButtonsDisabled(true); // Disable buttons while processing
             const reader = new FileReader();
+
             reader.onload = (e) => {
                 try {
                     const data = e.target.result;
-                    // Ensure XLSX is loaded (it should be, from the script tag in popup.html)
                     if (typeof XLSX === 'undefined') {
-                        throw new Error("SheetJS XLSX library not loaded.");
+                        console.error("SheetJS XLSX library not loaded. Make sure the script tag is in popup.html and the library is accessible.");
+                        throw new Error("SheetJS XLSX 库未加载。");
                     }
-                    const workbook = XLSX.read(data, { type: 'array' }); // 'array' is often more robust
-                    const firstSheetName = workbook.SheetNames[0];
-                    if (!firstSheetName) {
+                    console.log("SheetJS library (XLSX) is loaded.");
+
+                    // Try to parse the workbook
+                    let workbook;
+                    try {
+                        workbook = XLSX.read(data, { type: 'array' });
+                        console.log("Workbook parsed successfully.");
+                    } catch (readError) {
+                        console.error("Error reading workbook with XLSX.read:", readError);
+                        throw new Error(`无法读取Excel文件结构: ${readError.message}`);
+                    }
+
+                    if (!workbook || !workbook.SheetNames || workbook.SheetNames.length === 0) {
+                        console.error("No sheets found in workbook or workbook is null.");
                         throw new Error("Excel文件中没有找到工作表。");
                     }
+                    const firstSheetName = workbook.SheetNames[0];
+                    console.log(`Processing first sheet: "${firstSheetName}"`);
                     const worksheet = workbook.Sheets[firstSheetName];
-                    // Assuming rules are in the first column (A)
-                    // XLSX.utils.sheet_to_json can convert to array of objects or array of arrays
-                    // For array of arrays, then take first element of each inner array:
-                    const sheetData = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
+                    if (!worksheet) {
+                        console.error(`Sheet "${firstSheetName}" could not be loaded from workbook.`);
+                        throw new Error(`无法加载工作表 "${firstSheetName}"。`);
+                    }
+
+                    // Convert sheet to JSON array of arrays.
+                    // header: 1 creates an array of arrays.
+                    // defval: "" ensures empty cells are represented as empty strings.
+                    let sheetData;
+                    try {
+                        sheetData = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
+                        console.log("Sheet data (first 5 rows):", sheetData.slice(0, 5));
+                    } catch (sheetToJsonError) {
+                        console.error("Error converting sheet to JSON:", sheetToJsonError);
+                        throw new Error(`无法将工作表转换为数据: ${sheetToJsonError.message}`);
+                    }
 
                     const rules = [];
-                    if (sheetData.length > 0) {
-                        sheetData.forEach(row => {
-                            if (row && row[0] && String(row[0]).trim() !== "") { // Check if row and first cell exist and not empty
-                                rules.push(String(row[0]).trim());
+                    if (sheetData && sheetData.length > 0) {
+                        sheetData.forEach((row, rowIndex) => {
+                            // Check if the row is an array and has at least one cell
+                            if (Array.isArray(row) && row.length > 0 && row[0] !== null && typeof row[0] !== 'undefined') {
+                                const cellValue = String(row[0]).trim();
+                                if (cellValue !== "") {
+                                    rules.push(cellValue);
+                                }
+                            } else {
+                                // Log if a row is skipped, for debugging
+                                // console.log(`Skipping empty or invalid row at index ${rowIndex}:`, row);
                             }
                         });
                     }
+                    console.log(`Extracted ${rules.length} rules.`);
 
                     if (rules.length === 0) {
-                        throw new Error("在Excel文件的第一列中没有找到任何规范。");
+                        throw new Error("在Excel文件的第一列中没有找到任何有效规范文本。请确保第一列包含数据。");
                     }
 
                     defectStandards = {
@@ -168,22 +213,25 @@ document.addEventListener('DOMContentLoaded', function () {
                     };
                     console.log("Defect standards from Excel:", defectStandards);
                     showStatus(`从 "${file.name}" 加载了 ${rules.length} 条规范。`);
+
                 } catch (parseError) {
-                    console.error("Error parsing Excel:", parseError);
+                    console.error("Excel parsing process failed:", parseError);
                     showStatus(`解析Excel文件 "${file.name}" 出错: ${parseError.message}`, true);
                     defectStandards = null; // Clear previous standards if parsing failed
                 } finally {
-                    setButtonsDisabled(false);
-                    excelFileUpload.value = ""; // Reset file input to allow re-upload of same file
+                    setButtonsDisabled(false); // Re-enable buttons
+                    excelFileUpload.value = ""; // Reset file input
                 }
             };
+
             reader.onerror = (e) => {
-                console.error("Error reading file:", e);
-                showStatus(`读取文件 "${file.name}" 时出错。`, true);
+                console.error("FileReader error while reading file:", e);
+                showStatus(`读取文件 "${file.name}" 时出错: ${e.target.error.name}`, true);
                 defectStandards = null;
                 setButtonsDisabled(false);
                 excelFileUpload.value = "";
             };
+
             reader.readAsArrayBuffer(file); // Use readAsArrayBuffer for XLSX library
         }
     });

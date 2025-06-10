@@ -1,47 +1,81 @@
+/* styles.css */
 body {
-    font-family: sans-serif;
-    width: 400px; /* Increased width for better layout */
-    padding: 10px;
-    background-color: #f4f4f4; /* Light gray background */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    width: 420px; /* Slightly wider for more breathing room */
+    padding: 15px; /* Increased padding for body */
+    background-color: #f7f7f7; /* Softer background */
+    color: #333; /* Default text color */
 }
 
 .container {
-    background-color: #ffffff; /* White container background */
-    padding: 15px;
-    border-radius: 8px; /* Rounded corners for the container */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow */
+    background-color: #ffffff;
+    padding: 20px; /* Increased padding inside container */
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08); /* Softer shadow */
 }
 
 h1 {
     text-align: center;
-    color: #333;
-    font-size: 1.5em; /* Slightly larger H1 */
-    margin-bottom: 15px;
+    color: #2c3e50; /* Darker, more professional blue */
+    font-size: 1.6em; /* Slightly larger */
+    margin-bottom: 25px; /* More space below H1 */
 }
 
-h2 {
-    color: #555;
-    font-size: 1.1em; /* Standardized H2 size */
-    margin-top: 20px; /* More space above H2 */
-    margin-bottom: 10px;
-    border-bottom: 1px solid #eee; /* Separator line for sections */
-    padding-bottom: 5px;
+h2 { /* Styling for section titles like "规范来源", "缺陷描述输入" */
+    color: #34495e; /* Another shade of blue/gray */
+    font-size: 1.2em;
+    margin-top: 25px; /* Consistent top margin for sections */
+    margin-bottom: 15px; /* Space below section title */
+    border-bottom: 2px solid #ecf0f1; /* Lighter, thicker border */
+    padding-bottom: 8px; /* More padding for border */
 }
 
 .section {
-    margin-bottom: 20px; /* More space between sections */
+    margin-bottom: 25px; /* Consistent bottom margin for sections */
+}
+
+/* Styling for the bar containing "大模型" heading and its settings icon */
+.section-header-bar {
+    display: flex;
+    align-items: center;
+    color: #34495e; /* Match h2 color */
+    font-size: 1.2em; /* Match h2 font-size */
+    margin-top: 25px;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #ecf0f1;
+    padding-bottom: 8px;
+    font-weight: bold; /* Typically h2 is bold by default */
+}
+.section-header-bar h2 { /* Remove default h2 styling if used inside this bar */
+    margin: 0;
+    padding: 0;
+    border: none;
+    font-size: 1em; /* Inherit size from parent or set explicitly if h2 is nested */
+    font-weight: normal; /* If parent is bold, this can be normal or bold too */
+}
+
+
+.settings-icon {
+    cursor: pointer;
+    font-size: 1.1em; /* Slightly larger icon */
+    margin-left: 10px; /* More space from text */
+    color: #7f8c8d; /* Muted color for icon */
+    transition: color 0.2s ease;
+}
+.settings-icon:hover {
+    color: #3498db; /* Highlight color on hover */
 }
 
 .input-group {
-    margin-bottom: 12px; /* Consistent spacing in input groups */
+    margin-bottom: 18px; /* More space between input groups */
 }
 
 .input-group label {
     display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-    font-size: 0.9em; /* Slightly smaller label text */
-    color: #444;
+    margin-bottom: 6px; /* Space between label and input */
+    font-weight: 500; /* Slightly less bold */
+    font-size: 0.95em;
+    color: #555;
 }
 
 input[type="text"],
@@ -49,160 +83,172 @@ input[type="password"],
 input[type="file"],
 select,
 textarea {
-    width: calc(100% - 22px); /* Adjust width to account for padding and border */
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box; /* Ensures padding doesn't add to width */
-    font-size: 0.9em;
+    width: 100%; /* Full width */
+    padding: 10px 12px; /* More padding */
+    border: 1px solid #bdc3c7; /* Lighter border */
+    border-radius: 5px; /* Slightly more rounded */
+    box-sizing: border-box;
+    font-size: 0.95em;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+input[type="text"]:focus,
+input[type="password"]:focus,
+select:focus,
+textarea:focus {
+    border-color: #3498db; /* Highlight color on focus */
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2); /* Subtle focus shadow */
+    outline: none;
+}
+input[type="file"] {
+    padding: 5px; /* File inputs are styled differently by browsers */
 }
 
+
 textarea {
-    resize: vertical; /* Allow vertical resize only */
+    resize: vertical;
+    min-height: 70px; /* Slightly taller default */
 }
 
 button {
-    padding: 10px 15px;
-    background-color: #007bff; /* Standard blue */
+    padding: 10px 18px; /* More horizontal padding */
+    background-color: #3498db; /* Primary blue */
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     cursor: pointer;
-    font-size: 0.95em; /* Slightly larger button text */
-    transition: background-color 0.3s ease; /* Smooth transition for hover */
+    font-size: 1em; /* Standardized button font size */
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    text-align: center;
 }
-
 button:hover {
-    background-color: #0056b3; /* Darker blue on hover */
+    background-color: #2980b9; /* Darker blue on hover */
+}
+button:disabled {
+    background-color: #bdc3c7; /* Gray when disabled */
+    cursor: not-allowed;
 }
 
-.primary-button {
-    background-color: #28a745; /* Green for primary action */
-    display: block; /* Make it a block to center it */
-    width: auto;
-    margin: 20px auto 15px; /* Auto margins for centering */
+.primary-button { /* For Start Detection */
+    background-color: #2ecc71; /* Green */
+    display: block;
+    width: 60%; /* Wider */
+    margin: 30px auto 20px; /* More top margin, centered */
+    font-size: 1.05em; /* Slightly larger */
 }
-
 .primary-button:hover {
-    background-color: #1e7e34; /* Darker green on hover */
+    background-color: #27ae60; /* Darker green */
 }
+.primary-button:disabled {
+    background-color: #95a5a6; /* Darker gray when disabled */
+}
+
 
 #resultArea {
-    padding: 10px;
-    border: 1px dashed #ccc; /* Dashed border for result area */
-    min-height: 50px; /* Minimum height */
-    background-color: #e9ecef; /* Light background for result area */
-    border-radius: 4px;
-    margin-top:10px;
+    padding: 12px;
+    border: 1px dashed #bdc3c7;
+    min-height: 60px;
+    background-color: #ecf0f1; /* Light gray-blue */
+    border-radius: 5px;
+    margin-top: 20px; /* More space above results */
+    font-size: 0.9em;
+    line-height: 1.5;
 }
-
-/* styles.css - Add these at the end or integrate them */
-.error {
-    color: #D8000C; /* Standard error red */
-    background-color: #FFD2D2; /* Light red background */
-    padding: 8px;
-    border-radius: 4px;
-    margin-top: 5px;
-    border: 1px solid #D8000C;
+#resultArea.error { /* Ensure these are distinct enough */
+    color: #c0392b; /* Error red */
+    background-color: #fdecea; /* Light red background */
+    border-color: #c0392b;
 }
-
-.success {
-    color: #4F8A10; /* Standard success green */
-    background-color: #DFF2BF; /* Light green background */
-    padding: 8px;
-    border-radius: 4px;
-    margin-top: 5px;
-    border: 1px solid #4F8A10;
+#resultArea.success {
+    color: #27ae60; /* Success green */
+    background-color: #eafaf1; /* Light green background */
+    border-color: #27ae60;
 }
-
 #resultArea pre {
-    white-space: pre-wrap;   /* CSS3 */
-    white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
-    white-space: -pre-wrap;    /* Opera 4-6 */
-    white-space: -o-pre-wrap;  /* Opera 7 */
-    word-wrap: break-word;     /* Internet Explorer 5.5+ */
-    background-color: #f9f9f9; /* Light gray for pre background */
-    border: 1px solid #ddd;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    background-color: rgba(0,0,0,0.03); /* Subtle background for pre */
+    border: 1px solid rgba(0,0,0,0.07);
     padding: 10px;
     border-radius: 4px;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; /* Monospace font stack */
+    font-size: 0.95em; /* Slightly larger pre text */
 }
-
-/* Add to styles.css */
-
-.settings-icon {
-    cursor: pointer;
-    font-size: 1em; /* Adjust size as needed */
-    margin-left: 8px;
-    display: inline-block; /* Allows for better positioning if needed */
-}
-
-.section-header-bar {
-    display: flex;
-    /* justify-content: space-between; */ /* Removed for simpler alignment */
-    align-items: center;
-    border-bottom: 1px solid #eee; /* Copied from h2 style */
-    padding-bottom: 5px; /* Copied from h2 style */
-    margin-bottom: 10px; /* Copied from h2 style */
-}
-.section-header-bar h2 {
-    margin-bottom: 0;
-    border-bottom: none;
-    padding-bottom: 0;
-    font-size: 1.1em; /* Copied from h2 style */
-    color: #555; /* Copied from h2 style */
-}
-
 
 /* Modal Styles */
 .modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1000; /* Sit on top */
+    display: none;
+    position: fixed;
+    z-index: 1000;
     left: 0;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5); /* Slightly darker backdrop */
 }
 
 .modal-content {
     background-color: #fefefe;
-    margin: 10% auto; /* 10% from the top and centered */
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%; /* Could be more specific, like 350px */
-    max-width: 380px; /* Max width for the modal */
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    margin: 10% auto;
+    padding: 25px; /* More padding */
+    border: 1px solid #ccc; /* Lighter border */
+    width: 90%;
+    max-width: 400px; /* Slightly wider modal */
+    border-radius: 6px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
 .modal-content h3 {
     margin-top: 0;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
-    margin-bottom: 15px;
+    color: #2c3e50; /* Consistent heading color */
+    border-bottom: 1px solid #ecf0f1;
+    padding-bottom: 12px;
+    margin-bottom: 20px; /* More space below modal title */
 }
-
 
 .close-button {
-    color: #aaa;
+    color: #95a5a6; /* Muted color */
     float: right;
-    font-size: 28px;
+    font-size: 30px; /* Slightly larger */
     font-weight: bold;
+    transition: color 0.2s ease;
 }
-
 .close-button:hover,
 .close-button:focus {
-    color: black;
+    color: #333; /* Darker on hover */
     text-decoration: none;
     cursor: pointer;
 }
 
-/* Ensure buttons in modal have some margin */
-.modal-content button {
-    margin-top: 10px;
+.modal-content button { /* Buttons inside modal */
+    margin-top: 15px; /* More space above modal buttons */
+    padding: 9px 15px; /* Slightly smaller padding for modal buttons */
 }
 .modal-content button:not(:last-child) {
-    margin-right: 5px; /* Space between buttons in modal */
+    margin-right: 8px;
+}
+
+/* Ensure input[type="file"] gets consistent width with others */
+input[type="file"] {
+    padding: 10px; /* Consistent padding */
+     /* Add some background or border to make it look more like other inputs */
+    background-color: #fff;
+    border: 1px solid #bdc3c7;
+    border-radius: 5px;
+    line-height: normal; /* For better vertical alignment of text */
+}
+/* Styling for the file input button itself (browser-specific) */
+input[type="file"]::file-selector-button {
+  padding: 8px 12px;
+  margin-right: 10px;
+  border: none;
+  border-radius: 4px;
+  background-color: #ecf0f1; /* Light gray for button */
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+input[type="file"]::file-selector-button:hover {
+  background-color: #dfe6e9;
 }

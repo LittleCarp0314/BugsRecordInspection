@@ -17,7 +17,6 @@
                 <label for="excelFileUpload">上传Excel文件:</label>
                 <input type="file" id="excelFileUpload" accept=".xlsx, .xls">
             </div>
-            <!-- RAGflow URL input removed from here -->
         </div>
 
         <div class="section">
@@ -30,11 +29,10 @@
             </div>
         </div>
 
-        <!-- LLM Config section header, actual inputs moved to modal -->
         <div class="section-header-bar">
-             <h2>大模型 <span id="llmSettingsButton" class="settings-icon" title="大模型配置">⚙️</span></h2>
+             <span>大模型</span> <!-- Changed from h2 to span -->
+             <span id="llmSettingsButton" class="settings-icon" title="大模型配置">⚙️</span>
         </div>
-
 
         <button id="startDetectionButton" class="primary-button">开始检测</button>
 
@@ -52,22 +50,19 @@
             <span class="close-button" id="closeRagflowSettings">&times;</span>
             <h3>RAGflow 配置</h3>
             <div class="input-group">
-                <label for="ragflowUrl">RAGflow知识库链接:</label>
-                <input type="text" id="ragflowUrl" placeholder="输入RAGflow知识库链接">
+                <label for="ragflowApiUrlInput">外部知识库API:</label>
+                <input type="text" id="ragflowApiUrlInput" placeholder="例如: http://10.20.153.31/api/v1/dify">
             </div>
+            <!-- API Key field removed -->
             <div class="input-group">
-                <label for="ragflowApiKey">RAGflow API Key:</label>
-                <input type="password" id="ragflowApiKey" placeholder="输入API Key">
-            </div>
-            <div class="input-group">
-                <label for="ragflowKbId">RAGflow 知识库ID:</label>
-                <input type="text" id="ragflowKbId" placeholder="输入知识库ID">
+                <label for="ragflowKbIdInput">外部知识库ID:</label>
+                <input type="text" id="ragflowKbIdInput" placeholder="输入知识库ID">
             </div>
             <button id="saveRagflowSettingsButton">保存RAGflow配置</button>
         </div>
     </div>
 
-    <!-- LLM Settings Modal -->
+    <!-- LLM Settings Modal (remains unchanged for this subtask) -->
     <div id="llmSettingsModal" class="modal">
         <div class="modal-content">
             <span class="close-button" id="closeLlmSettings">&times;</span>
@@ -76,7 +71,6 @@
                 <label for="llmType">选择模型类型:</label>
                 <select id="llmType">
                     <option value="custom" selected>自定义</option>
-                    <!-- Future options can be added here -->
                 </select>
             </div>
             <div class="input-group">
