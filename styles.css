@@ -1,80 +1,82 @@
 /* styles.css */
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    width: 420px; /* Slightly wider for more breathing room */
-    padding: 15px; /* Increased padding for body */
-    background-color: #f7f7f7; /* Softer background */
-    color: #333; /* Default text color */
+    width: 400px; /* Reduced width slightly for compactness if desired, or keep 420px */
+    padding: 10px; /* Reduced body padding */
+    background-color: #f7f7f7;
+    color: #333;
 }
 
 .container {
     background-color: #ffffff;
-    padding: 20px; /* Increased padding inside container */
+    padding: 15px; /* Reduced container padding */
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08); /* Softer shadow */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    position: relative; /* Needed for absolute positioning of title if that route is taken */
 }
 
-h1 {
-    text-align: center;
-    color: #2c3e50; /* Darker, more professional blue */
-    font-size: 1.6em; /* Slightly larger */
-    margin-bottom: 25px; /* More space below H1 */
+/* New Plugin Title Style */
+.plugin-title {
+    font-size: 1.2em; /* Smaller font size for title */
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 15px; /* Space below title */
+    /* For top-left, default block behavior is fine. Can add position:absolute if needed for specific layouts */
+    /* text-align: left; /* Default for div */
 }
 
-h2 { /* Styling for section titles like "规范来源", "缺陷描述输入" */
-    color: #34495e; /* Another shade of blue/gray */
-    font-size: 1.2em;
-    margin-top: 25px; /* Consistent top margin for sections */
-    margin-bottom: 15px; /* Space below section title */
-    border-bottom: 2px solid #ecf0f1; /* Lighter, thicker border */
-    padding-bottom: 8px; /* More padding for border */
+/* Removed H1 styling as it's replaced by .plugin-title */
+/* h1 { ... } */
+
+h2 { /* Section titles */
+    color: #34495e;
+    font-size: 1.1em; /* Slightly smaller section titles */
+    margin-top: 15px; /* Reduced top margin */
+    margin-bottom: 10px; /* Reduced space below section title */
+    border-bottom: 1px solid #ecf0f1; /* Thinner border */
+    padding-bottom: 6px; /* Reduced padding for border */
 }
 
 .section {
-    margin-bottom: 25px; /* Consistent bottom margin for sections */
+    margin-bottom: 15px; /* Reduced bottom margin for sections */
 }
 
-/* Styling for the bar containing "大模型" heading and its settings icon */
-.section-header-bar {
+.section-header-bar { /* For "大模型" heading */
     display: flex;
     align-items: center;
-    color: #34495e; /* Match h2 color */
-    font-size: 1.2em; /* Match h2 font-size */
-    margin-top: 25px;
-    margin-bottom: 15px;
-    border-bottom: 2px solid #ecf0f1;
-    padding-bottom: 8px;
-    font-weight: bold; /* Typically h2 is bold by default */
+    color: #34495e;
+    font-size: 1.1em; /* Match h2 */
+    margin-top: 15px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ecf0f1;
+    padding-bottom: 6px;
+    font-weight: bold;
 }
-.section-header-bar h2 { /* Remove default h2 styling if used inside this bar */
-    margin: 0;
-    padding: 0;
-    border: none;
-    font-size: 1em; /* Inherit size from parent or set explicitly if h2 is nested */
-    font-weight: normal; /* If parent is bold, this can be normal or bold too */
+.section-header-bar span:first-child { /* The text part */
+    flex-grow: 1; /* Allow text to take available space if settings icon pushes it */
 }
 
 
 .settings-icon {
     cursor: pointer;
-    font-size: 1.1em; /* Slightly larger icon */
-    margin-left: 10px; /* More space from text */
-    color: #7f8c8d; /* Muted color for icon */
+    font-size: 1em; /* Slightly smaller icon */
+    margin-left: 8px;
+    color: #7f8c8d;
     transition: color 0.2s ease;
 }
 .settings-icon:hover {
-    color: #3498db; /* Highlight color on hover */
+    color: #3498db;
 }
 
 .input-group {
-    margin-bottom: 18px; /* More space between input groups */
+    margin-bottom: 12px; /* Reduced space between input groups */
 }
 
 .input-group label {
     display: block;
-    margin-bottom: 6px; /* Space between label and input */
-    font-weight: 500; /* Slightly less bold */
-    font-size: 0.95em;
+    margin-bottom: 4px; /* Reduced space */
+    font-weight: 500;
+    font-size: 0.9em; /* Slightly smaller label */
     color: #555;
 }
 
@@ -83,12 +85,12 @@ input[type="password"],
 input[type="file"],
 select,
 textarea {
-    width: 100%; /* Full width */
-    padding: 10px 12px; /* More padding */
-    border: 1px solid #bdc3c7; /* Lighter border */
-    border-radius: 5px; /* Slightly more rounded */
+    width: 100%;
+    padding: 8px 10px; /* Reduced padding */
+    border: 1px solid #bdc3c7;
+    border-radius: 4px; /* Slightly less rounded */
     box-sizing: border-box;
-    font-size: 0.95em;
+    font-size: 0.9em; /* Slightly smaller font in inputs */
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 input[type="text"]:focus,
@@ -104,19 +106,26 @@ input[type="file"] {
 }
 
 
-textarea {
+textarea { /* General textarea */
     resize: vertical;
-    min-height: 70px; /* Slightly taller default */
+    /* min-height removed to be controlled by rows or specific ID */
+}
+#directStandardsInput { /* For direct standards input */
+    min-height: 60px; /* Or use rows attribute in HTML */
+}
+#manualDefectInput { /* For defect description */
+    min-height: 80px; /* Give more space, or use rows attribute */
 }
 
-button {
-    padding: 10px 18px; /* More horizontal padding */
-    background-color: #3498db; /* Primary blue */
+
+button { /* General button style */
+    padding: 8px 15px; /* Reduced padding for smaller buttons */
+    background-color: #3498db;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
     cursor: pointer;
-    font-size: 1em; /* Standardized button font size */
+    font-size: 0.95em; /* Slightly smaller font */
     font-weight: 500;
     transition: background-color 0.2s ease;
     text-align: center;
@@ -129,12 +138,19 @@ button:disabled {
     cursor: not-allowed;
 }
 
-.primary-button { /* For Start Detection */
-    background-color: #2ecc71; /* Green */
+.small-button { /* For "应用编辑的规范" */
+    padding: 5px 10px; /* Even smaller */
+    font-size: 0.8em;
+    margin-top: 6px;
+}
+
+.primary-button { /* For "开始检查" button */
+    background-color: #2ecc71;
     display: block;
-    width: 60%; /* Wider */
-    margin: 30px auto 20px; /* More top margin, centered */
-    font-size: 1.05em; /* Slightly larger */
+    width: auto; /* Auto width, control with padding */
+    padding: 8px 25px; /* Adjusted padding for a smaller but clear primary button */
+    margin: 20px auto 15px; /* Reduced margins */
+    font-size: 1em; /* Keep it readable */
 }
 .primary-button:hover {
     background-color: #27ae60; /* Darker green */
@@ -145,14 +161,14 @@ button:disabled {
 
 
 #resultArea {
-    padding: 12px;
+    padding: 10px;
     border: 1px dashed #bdc3c7;
-    min-height: 60px;
+    min-height: 50px; /* Reduced min-height */
     background-color: #ecf0f1; /* Light gray-blue */
     border-radius: 5px;
-    margin-top: 20px; /* More space above results */
+    margin-top: 15px; /* Reduced margin */
     font-size: 0.9em;
-    line-height: 1.5;
+    line-height: 1.4; /* Slightly tighter line height */
 }
 #resultArea.error { /* Ensure these are distinct enough */
     color: #c0392b; /* Error red */
@@ -251,4 +267,11 @@ input[type="file"]::file-selector-button {
 }
 input[type="file"]::file-selector-button:hover {
   background-color: #dfe6e9;
+}
+
+/* Add to styles.css if a distinct small button style is desired */
+.small-button {
+    padding: 5px 10px; /* Even smaller */
+    font-size: 0.8em;
+    margin-top: 6px;
 }

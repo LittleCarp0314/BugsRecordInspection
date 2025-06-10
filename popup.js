@@ -2,9 +2,26 @@
 document.addEventListener('DOMContentLoaded', function () {
     console.log("Popup DOM fully loaded and parsed");
 
+    // Initial check for XLSX library
+    if (typeof XLSX === 'undefined') {
+        console.error("CRITICAL: SheetJS XLSX library not loaded on initial popup load!");
+        // Display a persistent error message to the user in a prominent place if possible
+        // For now, resultArea is used, but this might be cleared.
+        // A dedicated status bar div might be better for such critical errors.
+        const criticalErrorArea = document.getElementById('resultArea') || document.body;
+        criticalErrorArea.innerHTML = '<div class="error">错误：核心解析库未能加载。请检查网络连接或稍后重试。Excel上传功能将无法使用。</div>';
+        // Optionally disable Excel upload button
+        const excelUploadButton = document.getElementById('excelFileUpload');
+        if (excelUploadButton) excelUploadButton.disabled = true;
+    } else {
+        console.log("SheetJS XLSX library confirmed loaded on initial popup load.");
+    }
+
     // --- Get references to UI elements ---
     // Main UI
     const excelFileUpload = document.getElementById('excelFileUpload');
+    const directStandardsInput = document.getElementById('directStandardsInput'); // New element
+    const applyDirectStandardsButton = document.getElementById('applyDirectStandardsButton'); // New element
     const scanJiraButton = document.getElementById('scanJiraButton');
     const manualDefectInput = document.getElementById('manualDefectInput');
     const startDetectionButton = document.getElementById('startDetectionButton');
@@ -138,6 +155,13 @@ document.addEventListener('DOMContentLoaded', function () {
     excelFileUpload.addEventListener('change', (event) => {
         const file = event.target.files[0];
         if (file) {
+            // Explicit check again before attempting to use XLSX
+            if (typeof XLSX === 'undefined') {
+                showStatus("错误：SheetJS XLSX 库未加载。无法解析Excel文件。请检查网络连接或刷新插件。", true);
+                excelFileUpload.value = ""; // Reset file input
+                return; // Stop further processing
+            }
+
             showStatus(`正在处理Excel文件 "${file.name}"...`);
             setButtonsDisabled(true); // Disable buttons while processing
             const reader = new FileReader();
@@ -145,16 +169,11 @@ document.addEventListener('DOMContentLoaded', function () {
             reader.onload = (e) => {
                 try {
                     const data = e.target.result;
-                    if (typeof XLSX === 'undefined') {
-                        console.error("SheetJS XLSX library not loaded. Make sure the script tag is in popup.html and the library is accessible.");
-                        throw new Error("SheetJS XLSX 库未加载。");
-                    }
-                    console.log("SheetJS library (XLSX) is loaded.");
+                    // console.log("SheetJS library (XLSX) is loaded."); // Already confirmed above or will fail
 
-                    // Try to parse the workbook
                     let workbook;
                     try {
-                        workbook = XLSX.read(data, { type: 'array' });
+                        workbook = XLSX.read(data, { type: 'array', cellNF: false, cellStyles: false }); // Added options to potentially simplify parsing
                         console.log("Workbook parsed successfully.");
                     } catch (readError) {
                         console.error("Error reading workbook with XLSX.read:", readError);
@@ -173,12 +192,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         throw new Error(`无法加载工作表 "${firstSheetName}"。`);
                     }
 
-                    // Convert sheet to JSON array of arrays.
-                    // header: 1 creates an array of arrays.
-                    // defval: "" ensures empty cells are represented as empty strings.
                     let sheetData;
                     try {
-                        sheetData = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
+                        // Using { raw: true, defval: "" } might be more robust for plain text extraction
+                        sheetData = XLSX.utils.sheet_to_json(worksheet, { header: 1, raw: true, defval: "" });
                         console.log("Sheet data (first 5 rows):", sheetData.slice(0, 5));
                     } catch (sheetToJsonError) {
                         console.error("Error converting sheet to JSON:", sheetToJsonError);
@@ -386,6 +403,59 @@ document.addEventListener('DOMContentLoaded', function () {
             setButtonsDisabled(false, [startDetectionButton, scanJiraButton, excelFileUpload]);
         }
     });
+
+    // --- Apply Direct Standards Button ---
+    applyDirectStandardsButton.addEventListener('click', () => {
+        const text = directStandardsInput.value.trim();
+        if (!text) {
+            showStatus("错误：直接编辑的规范内容不能为空。", true);
+            // Optionally clear direct input standards if text is empty
+            // if (defectStandards && defectStandards.source === 'direct') {
+            //     defectStandards = null;
+            // }
+            return;
+        }
+
+        const rules = text.split('\n')
+                          .map(line => line.trim())
+                          .filter(line => line !== "");
+
+        if (rules.length === 0) {
+            showStatus("错误：未能从直接编辑内容中解析出有效规范。", true);
+            // if (defectStandards && defectStandards.source === 'direct') {
+            //     defectStandards = null;
+            // }
+            return;
+        }
+
+        defectStandards = {
+            source: 'direct',
+            rules: rules
+        };
+        console.log("Defect standards from direct input:", defectStandards);
+        showStatus(`已应用 ${rules.length} 条直接编辑的规范。`);
+
+        // Clear other sources display if necessary, e.g., reset file input
+        excelFileUpload.value = "";
+        // If RAGflow was active, this direct input now takes precedence.
+        // No need to clear ragflowConfig from storage, just defectStandards variable.
+    });
+
+    // Modify existing loadSettings to potentially load direct standards if saved
+    // For now, direct standards are not persisted, they are applied ad-hoc.
+    // If persistence is desired for direct input, chrome.storage would be used here too.
+
+    // Modify Excel upload and RAGflow save to indicate they override direct input
+    // In excelFileUpload listener's success block, after setting defectStandards:
+    // directStandardsInput.value = ""; // Clear direct input area if Excel is loaded
+
+    // In RAGflow save listener, after setting defectStandards:
+    // directStandardsInput.value = ""; // Clear direct input area if RAGflow is configured
+
+    // --- Start Detection Button (ensure it uses the latest defectStandards source) ---
+    // The existing startDetectionButton logic should already correctly use `defectStandards`
+    // regardless of its source ('excel', 'ragflow', or now 'direct'), so no major change
+    // is needed there unless specific handling for 'direct' source is required (which it isn't currently).
 
     // Initial load
     loadSettings(); // Ensure settings are loaded after the rest of the script is parsed.

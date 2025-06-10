@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>缺陷记录规范检测</title>
+    <title>缺陷记录规范检查</title> <!-- Changed extension title for browser tab -->
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>缺陷记录规范检测</h1>
+        <div class="plugin-title">缺陷记录规范检查</div> <!-- Moved H1 to a div for top-left placement -->
 
         <div class="section">
             <h2>规范来源
@@ -17,6 +17,11 @@
                 <label for="excelFileUpload">上传Excel文件:</label>
                 <input type="file" id="excelFileUpload" accept=".xlsx, .xls">
             </div>
+            <div class="input-group">
+                <label for="directStandardsInput">直接编辑规范 (每行一条):</label>
+                <textarea id="directStandardsInput" rows="4" placeholder="在此处直接输入或编辑缺陷记录规范，每行一条..."></textarea> <!-- Reduced rows for compactness -->
+                <button id="applyDirectStandardsButton" class="small-button">应用编辑的规范</button>
+            </div>
         </div>
 
         <div class="section">
@@ -25,16 +30,17 @@
                 <button id="scanJiraButton">扫描当前Jira页面</button>
             </div>
             <div class="input-group">
-                <textarea id="manualDefectInput" placeholder="在此处粘贴缺陷描述..." rows="4"></textarea>
+                <!-- Increased rows for defect description, ensure it has enough space -->
+                <textarea id="manualDefectInput" placeholder="在此处粘贴缺陷描述..." rows="6"></textarea>
             </div>
         </div>
 
         <div class="section-header-bar">
-             <span>大模型</span> <!-- Changed from h2 to span -->
+             <span>大模型</span>
              <span id="llmSettingsButton" class="settings-icon" title="大模型配置">⚙️</span>
         </div>
 
-        <button id="startDetectionButton" class="primary-button">开始检测</button>
+        <button id="startDetectionButton" class="primary-button">开始检查</button> <!-- Changed button text -->
 
         <div class="section">
             <h2>检测结果</h2>
@@ -44,7 +50,7 @@
         </div>
     </div>
 
-    <!-- RAGflow Settings Modal -->
+    <!-- RAGflow Settings Modal (structure remains) -->
     <div id="ragflowSettingsModal" class="modal">
         <div class="modal-content">
             <span class="close-button" id="closeRagflowSettings">&times;</span>
@@ -53,7 +59,6 @@
                 <label for="ragflowApiUrlInput">外部知识库API:</label>
                 <input type="text" id="ragflowApiUrlInput" placeholder="例如: http://10.20.153.31/api/v1/dify">
             </div>
-            <!-- API Key field removed -->
             <div class="input-group">
                 <label for="ragflowKbIdInput">外部知识库ID:</label>
                 <input type="text" id="ragflowKbIdInput" placeholder="输入知识库ID">
@@ -62,7 +67,7 @@
         </div>
     </div>
 
-    <!-- LLM Settings Modal (remains unchanged for this subtask) -->
+    <!-- LLM Settings Modal (structure remains) -->
     <div id="llmSettingsModal" class="modal">
         <div class="modal-content">
             <span class="close-button" id="closeLlmSettings">&times;</span>
